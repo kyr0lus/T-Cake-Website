@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 
 function BasketIcon({ size = 16 }: { size?: number }) {
   return (
@@ -71,7 +71,7 @@ export default function Home() {
     { key: "inquire", label: "Inquire", href: "#contact" },
     { key: "order", label: "Order", href: "#order" },
     { key: "contact", label: "Contact us", href: "#contact" },
-    { key: "basket", label: "Basket", href: "#", icon: "basket" as const },
+    { key: "basket", label: "Basket", href: "#" },
     { key: "about", label: "About us", href: "#" },
   ] as const;
 
@@ -103,7 +103,7 @@ export default function Home() {
     }).format(n);
 
   const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
+    e: MouseEvent<HTMLAnchorElement>,
     item: (typeof navItems)[number]
   ) => {
     // For the non-functional tabs, prevent jumping to top
@@ -164,12 +164,12 @@ export default function Home() {
                       "topbar-link",
                       isPrimary ? "topbar-link--primary" : "",
                       isActive ? "is-active" : "",
-                    ]
+                    ]  
                       .filter(Boolean)
                       .join(" ")}
                     aria-current={isActive ? "page" : undefined}
                   >
-                    {item.icon === "basket" ? <BasketIcon /> : null}
+                    {isBasket ? <BasketIcon /> : null}
                     <span>{item.label}</span>
                     {isBasket ? (
                       <span className="topbar-badge" aria-label="Items in basket">
