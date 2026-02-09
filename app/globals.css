@@ -29,3 +29,87 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+/* Top bar links */
+.topbar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  text-decoration: none;
+  color: #1f2328;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+
+  padding: 8px 10px;
+  border-radius: 999px;
+
+  border: 1px solid transparent;
+  background: transparent;
+
+  transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+  white-space: nowrap;
+}
+
+.topbar-link:hover {
+  background: #ffffff;
+  border-color: #ece6e0;
+  transform: translateY(-1px);
+}
+
+.topbar-link:active {
+  transform: translateY(0px);
+  background: #f7e7ee;
+  border-color: #f1d1dc;
+}
+
+.topbar-link:focus-visible {
+  outline: 3px solid rgba(184, 92, 122, 0.35);
+  outline-offset: 2px;
+}
+
+/* Active (selected) state */
+.topbar-link.is-active {
+  background: #b85c7a;
+  border-color: #b85c7a;
+  color: #ffffff;
+}
+
+/* “Primary” style for Basket/Order (slightly more button-like even when not active) */
+.topbar-link--primary {
+  background: #ffffff;
+  border-color: #ece6e0;
+}
+
+/* Badge for basket count */
+.topbar-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+
+  background: #b85c7a;
+  color: #ffffff;
+}
+
+/* If the basket link is active (pink background), invert badge so it stays readable */
+.topbar-link.is-active .topbar-badge {
+  background: rgba(255, 255, 255, 0.92);
+  color: #b85c7a;
+}

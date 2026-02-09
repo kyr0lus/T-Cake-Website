@@ -1,3 +1,38 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+function BasketIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 6h2l2.2 10.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L22 6H6.2"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 10l3-4 3 4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 export default function Home() {
   const products = [
     {
@@ -12,8 +47,7 @@ export default function Home() {
     {
       id: "chocolate",
       name: "Triple Chocolate Cake",
-      description:
-        "Rich cocoa sponge with chocolate ganache. Serves 10–12.",
+      description: "Rich cocoa sponge with chocolate ganache. Serves 10–12.",
       price: 34,
       image: "/products/chocolate.jpg",
       tags: ["Best for birthdays"],
@@ -21,8 +55,7 @@ export default function Home() {
     {
       id: "cupcakes",
       name: "Box of 15 Cupcakes",
-      description:
-        "Choose 2 flavours. Includes personalised toppers (optional).",
+      description: "Choose 2 flavours. Includes personalised toppers (optional).",
       price: 22,
       image: "/products/cupcakes.jpg",
       tags: ["Great gift"],
@@ -30,17 +63,38 @@ export default function Home() {
   ];
 
   const navItems = [
-    { label: "Cakes", href: "#cakes" },
-    { label: "Brownies", href: "#" },
-    { label: "Cupcakes", href: "#" },
-    { label: "Tray bakes", href: "#" },
-    { label: "Make your own", href: "#" },
-    { label: "Inquire", href: "#contact" },
-    { label: "Order", href: "#order" },
-    { label: "Contact us", href: "#contact" },
-    { label: "Basket", href: "#" },
-    { label: "About us", href: "#" },
-  ];
+    { key: "cakes", label: "Cakes", href: "#cakes" },
+    { key: "brownies", label: "Brownies", href: "#" },
+    { key: "cupcakes", label: "Cupcakes", href: "#" },
+    { key: "traybakes", label: "Tray bakes", href: "#" },
+    { key: "makeyourown", label: "Make your own", href: "#" },
+    { key: "inquire", label: "Inquire", href: "#contact" },
+    { key: "order", label: "Order", href: "#order" },
+    { key: "contact", label: "Contact us", href: "#contact" },
+    { key: "basket", label: "Basket", href: "#", icon: "basket" as const },
+    { key: "about", label: "About us", href: "#" },
+  ] as const;
+
+  const [activeKey, setActiveKey] = useState<(typeof navItems)[number]["key"]>(
+    "cakes"
+  );
+
+  // For looks: basket badge can just stay 0 for now
+  const basketCount = 0;
+
+  // Make active state follow the URL hash for the sections you have.
+  useEffect(() => {
+    const syncFromHash = () => {
+      const hash = window.location.hash || "";
+      if (hash === "#cakes") setActiveKey("cakes");
+      else if (hash === "#order") setActiveKey("order");
+      else if (hash === "#contact") setActiveKey("contact");
+    };
+
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    return () => window.removeEventListener("hashchange", syncFromHash);
+  }, []);
 
   const gbp = (n: number) =>
     new Intl.NumberFormat("en-GB", {
@@ -48,23 +102,18 @@ export default function Home() {
       currency: "GBP",
     }).format(n);
 
-  const navLinkStyle = {
-    textDecoration: "none",
-    color: "#1f2328",
-    fontWeight: 600,
-    fontSize: 14,
-    padding: "8px 10px",
-    borderRadius: 999,
-    border: "1px solid transparent",
-    background: "transparent",
-    lineHeight: 1,
-    whiteSpace: "nowrap" as const,
-  };
-
-  const navLinkEmphasisStyle = {
-    ...navLinkStyle,
-    border: "1px solid #ece6e0",
-    background: "white",
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    item: (typeof navItems)[number]
+  ) => {
+    // For the non-functional tabs, prevent jumping to top
+    if (item.href === "#") {
+      e.preventDefault();
+      setActiveKey(item.key);
+      return;
+    }
+    // For real anchors, still set active immediately (then hashchange keeps it correct)
+    setActiveKey(item.key);
   };
 
   return (
@@ -93,18 +142,40 @@ export default function Home() {
               T&apos;s Cakes
             </div>
 
-            <nav style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <nav
+              style={{
+                display: "flex",
+                gap: 10,
+                flexWrap: "wrap",
+                justifyContent: "flex-end",
+              }}
+            >
               {navItems.map((item) => {
-                const isEmphasis =
-                  item.label === "Basket" || item.label === "Order";
+                const isActive = activeKey === item.key;
+                const isBasket = item.key === "basket";
+                const isPrimary = item.key === "order" || item.key === "basket";
 
                 return (
                   <a
-                    key={item.label}
+                    key={item.key}
                     href={item.href}
-                    style={isEmphasis ? navLinkEmphasisStyle : navLinkStyle}
+                    onClick={(e) => handleNavClick(e, item)}
+                    className={[
+                      "topbar-link",
+                      isPrimary ? "topbar-link--primary" : "",
+                      isActive ? "is-active" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    aria-current={isActive ? "page" : undefined}
                   >
-                    {item.label}
+                    {item.icon === "basket" ? <BasketIcon /> : null}
+                    <span>{item.label}</span>
+                    {isBasket ? (
+                      <span className="topbar-badge" aria-label="Items in basket">
+                        {basketCount}
+                      </span>
+                    ) : null}
                   </a>
                 );
               })}
@@ -171,23 +242,11 @@ export default function Home() {
             </p>
           </div>
 
-          <div
-            style={{
-              border: "1px solid #ece6e0",
-              borderRadius: 16,
-              overflow: "hidden",
-              background: "white",
-            }}
-          >
+          <div style={{ border: "1px solid #ece6e0", borderRadius: 16, overflow: "hidden", background: "white" }}>
             <img
               src={products[0].image}
               alt="Featured cake"
-              style={{
-                width: "100%",
-                height: 260,
-                objectFit: "cover",
-                background: "#f3f3f3",
-              }}
+              style={{ width: "100%", height: 260, objectFit: "cover", background: "#f3f3f3" }}
             />
             <div style={{ padding: 14, color: "#667085" }}>
               Collection / delivery available (edit details below).
@@ -210,22 +269,12 @@ export default function Home() {
           {products.map((p) => (
             <div
               key={p.id}
-              style={{
-                border: "1px solid #ece6e0",
-                background: "white",
-                borderRadius: 16,
-                overflow: "hidden",
-              }}
+              style={{ border: "1px solid #ece6e0", background: "white", borderRadius: 16, overflow: "hidden" }}
             >
               <img
                 src={p.image}
                 alt={p.name}
-                style={{
-                  width: "100%",
-                  height: 210,
-                  objectFit: "cover",
-                  background: "#f3f3f3",
-                }}
+                style={{ width: "100%", height: 210, objectFit: "cover", background: "#f3f3f3" }}
               />
               <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 8 }}>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -250,15 +299,7 @@ export default function Home() {
                 <div style={{ fontSize: 18, fontWeight: 800 }}>{p.name}</div>
                 <div style={{ color: "#667085" }}>{p.description}</div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: 10,
-                    flexWrap: "wrap",
-                  }}
-                >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                   <div style={{ fontWeight: 800 }}>{gbp(p.price)}</div>
                   <a
                     href="#contact"
@@ -284,18 +325,9 @@ export default function Home() {
         <h2 id="order" style={{ marginTop: 34, marginBottom: 10, fontSize: 20 }}>
           Orders & payments
         </h2>
-        <div
-          style={{
-            border: "1px solid #ece6e0",
-            background: "white",
-            borderRadius: 16,
-            padding: 14,
-            color: "#667085",
-          }}
-        >
+        <div style={{ border: "1px solid #ece6e0", background: "white", borderRadius: 16, padding: 14, color: "#667085" }}>
           <p style={{ marginTop: 0 }}>
-            This section is where card payments will go (Stripe). For now, your
-            website is “display + contact”.
+            This section is where card payments will go (Stripe). For now, your website is “display + contact”.
           </p>
           <p style={{ marginBottom: 0 }}>
             Next step: we’ll add a simple order form → then connect Stripe checkout.
@@ -309,15 +341,9 @@ export default function Home() {
 
         <div style={{ border: "1px solid #ece6e0", background: "white", borderRadius: 16, padding: 14 }}>
           <div style={{ display: "grid", gap: 8, color: "#1f2328" }}>
-            <div>
-              <b>Email:</b> you@yourbakery.co.uk
-            </div>
-            <div>
-              <b>Phone:</b> +44 07xxx xxxxxx
-            </div>
-            <div>
-              <b>Location:</b> Your town/city
-            </div>
+            <div><b>Email:</b> you@yourbakery.co.uk</div>
+            <div><b>Phone:</b> +44 07xxx xxxxxx</div>
+            <div><b>Location:</b> Your town/city</div>
           </div>
 
           <p style={{ color: "#667085" }}>
@@ -325,15 +351,7 @@ export default function Home() {
           </p>
         </div>
 
-        <footer
-          style={{
-            marginTop: 40,
-            padding: "18px 0 40px",
-            color: "#667085",
-            fontSize: 14,
-            borderTop: "1px solid #ece6e0",
-          }}
-        >
+        <footer style={{ marginTop: 40, padding: "18px 0 40px", color: "#667085", fontSize: 14, borderTop: "1px solid #ece6e0" }}>
           © {new Date().getFullYear()} Your Bakery Name. All rights reserved.
         </footer>
       </div>
