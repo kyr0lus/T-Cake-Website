@@ -55,6 +55,7 @@ export default function Home() {
     },
   ];
 
+  // NOTE: "Order" no longer points to #order since the Orders section was removed.
   const navItems = [
     { key: "cakes", label: "Cakes", href: "#cakes" },
     { key: "brownies", label: "Brownies", href: "#" },
@@ -62,7 +63,7 @@ export default function Home() {
     { key: "traybakes", label: "Tray bakes", href: "#" },
     { key: "makeyourown", label: "Make your own", href: "#" },
     { key: "inquire", label: "Inquire", href: "#contact" },
-    { key: "order", label: "Order", href: "#order" },
+    { key: "order", label: "Order", href: "#contact" },
     { key: "contact", label: "Contact us", href: "#contact" },
     { key: "basket", label: "Basket", href: "#" },
     { key: "about", label: "About us", href: "#" },
@@ -70,6 +71,7 @@ export default function Home() {
 
   const [activeKey, setActiveKey] = useState<(typeof navItems)[number]["key"]>("cakes");
 
+  // For looks: basket badge can just stay 0 for now
   const basketCount = 0;
 
   // Keep active tab in sync with hash, but don't overwrite "Inquire" when it goes to #contact.
@@ -78,9 +80,8 @@ export default function Home() {
       const hash = window.location.hash || "";
 
       if (hash === "#cakes") setActiveKey("cakes");
-      else if (hash === "#order") setActiveKey("order");
       else if (hash === "#contact") {
-        setActiveKey((prev) => (prev === "inquire" ? "inquire" : "contact"));
+        setActiveKey((prev) => (prev === "inquire" ? "inquire" : prev === "order" ? "order" : "contact"));
       }
     };
 
@@ -113,28 +114,34 @@ export default function Home() {
           borderBottom: "1px solid var(--primary-strong)",
         }}
       >
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "14px 24px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-            <div style={{ fontWeight: 900, letterSpacing: 0.2, fontSize: 16 }}>T&apos;s Cakes</div>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "10px 24px 14px" }}>
+          {/* Title centred */}
+          <div
+            style={{
+              textAlign: "center",
+              fontWeight: 900,
+              letterSpacing: 2,
+              fontSize: 22,
+              paddingTop: 6,
+              paddingBottom: 10,
+            }}
+          >
+            T&apos;S CAKES
+          </div>
 
-            <nav style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
+          {/* Nav below title */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <nav style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
               {navItems.map((item) => {
                 const isActive = activeKey === item.key;
                 const isBasket = item.key === "basket";
-                const isPrimary = item.key === "order" || item.key === "basket";
 
                 return (
                   <a
                     key={item.key}
                     href={item.href}
                     onClick={(e) => handleNavClick(e, item)}
-                    className={[
-                      "topbar-link",
-                      isPrimary ? "topbar-link--primary" : "",
-                      isActive ? "is-active" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
+                    className={["topbar-link", isActive ? "is-active" : ""].filter(Boolean).join(" ")}
                     aria-current={isActive ? "page" : undefined}
                   >
                     {isBasket ? <BasketIcon /> : null}
@@ -271,16 +278,6 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Order */}
-        <h2 id="order" style={{ marginTop: 34, marginBottom: 10, fontSize: 20 }}>
-          Orders & payments
-        </h2>
-
-        <div style={{ border: "1px solid var(--border)", background: "var(--card)", borderRadius: 16, padding: 14, color: "var(--muted)" }}>
-          <p style={{ marginTop: 0 }}>This section is where card payments will go (Stripe). For now, your website is “display + contact”.</p>
-          <p style={{ marginBottom: 0 }}>Next step: we’ll add a simple order form → then connect Stripe checkout.</p>
-        </div>
-
         {/* Contact */}
         <h2 id="contact" style={{ marginTop: 34, marginBottom: 10, fontSize: 20 }}>
           Contact
@@ -288,9 +285,15 @@ export default function Home() {
 
         <div style={{ border: "1px solid var(--border)", background: "var(--card)", borderRadius: 16, padding: 14 }}>
           <div style={{ display: "grid", gap: 8, color: "var(--foreground)" }}>
-            <div><b>Email:</b> you@yourbakery.co.uk</div>
-            <div><b>Phone:</b> +44 07xxx xxxxxx</div>
-            <div><b>Location:</b> Your town/city</div>
+            <div>
+              <b>Email:</b> you@yourbakery.co.uk
+            </div>
+            <div>
+              <b>Phone:</b> +44 07xxx xxxxxx
+            </div>
+            <div>
+              <b>Location:</b> Your town/city
+            </div>
           </div>
 
           <p style={{ color: "var(--muted)" }}>
