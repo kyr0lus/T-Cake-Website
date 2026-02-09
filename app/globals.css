@@ -1,34 +1,22 @@
 @import "tailwindcss";
 
 :root {
+  /* Force light UI variables even if browser is in dark mode */
+  color-scheme: light;
+
   /* Cream/white accent background */
   --background: #fffaf5;
   --foreground: #1f2328;
 
   /* New primary palette */
   --primary: #ccffff;        /* main colour */
-  --primary-strong: #66cccc; /* darker border/outline */
-  --primary-soft: #b3f0f0;   /* active/pressed tint */
+  --primary-strong: #66cccc; /* borders/outline */
+  --primary-soft: #b3f0f0;   /* pressed/active tint */
 
   /* UI neutrals */
   --card: #ffffff;
   --border: #ece6e0;
   --muted: #667085;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --card: #111111;
-    --border: #2a2a2a;
-    --muted: #b7bdc6;
-
-    /* keep your brand colours */
-    --primary: #ccffff;
-    --primary-strong: #66cccc;
-    --primary-soft: #b3f0f0;
-  }
 }
 
 * {
@@ -40,6 +28,12 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Prevent anchor jumps hiding under the sticky header */
+h2,
+[id] {
+  scroll-margin-top: 90px;
 }
 
 /* Top bar links */
@@ -60,34 +54,38 @@ body {
   border: 1px solid transparent;
   background: transparent;
 
-  transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+  transition:
+    transform 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease;
+
   white-space: nowrap;
 }
 
-/* Hover: white pill over cyan banner */
 .topbar-link:hover {
   background: var(--card);
-  border-color: var(--border);
+  border-color: var(--primary-strong);
   transform: translateY(-1px);
 }
 
-/* Click/pressed */
 .topbar-link:active {
   transform: translateY(0px);
   background: var(--primary-soft);
   border-color: var(--primary-strong);
 }
 
-/* Keyboard focus */
 .topbar-link:focus-visible {
   outline: 3px solid rgba(102, 204, 204, 0.55);
   outline-offset: 2px;
 }
 
-/* Active (selected) state: slightly darker cyan pill so it still reads on the cyan banner */
+/* Active tab */
 .topbar-link.is-active {
-  background: var(--primary-soft);
+  background: var(--card);
   border-color: var(--primary-strong);
+  box-shadow: 0 1px 0 rgba(31, 35, 40, 0.08);
   color: var(--foreground);
 }
 
@@ -111,12 +109,6 @@ body {
   font-size: 12px;
   font-weight: 700;
 
-  background: var(--foreground);
-  color: #ffffff;
-}
-
-/* If the basket link is active, keep badge readable */
-.topbar-link.is-active .topbar-badge {
   background: var(--foreground);
   color: #ffffff;
 }

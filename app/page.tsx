@@ -72,12 +72,16 @@ export default function Home() {
 
   const basketCount = 0;
 
+  // Keep active tab in sync with hash, but don't overwrite "Inquire" when it goes to #contact.
   useEffect(() => {
     const syncFromHash = () => {
       const hash = window.location.hash || "";
+
       if (hash === "#cakes") setActiveKey("cakes");
       else if (hash === "#order") setActiveKey("order");
-      else if (hash === "#contact") setActiveKey("contact");
+      else if (hash === "#contact") {
+        setActiveKey((prev) => (prev === "inquire" ? "inquire" : "contact"));
+      }
     };
 
     syncFromHash();
@@ -110,18 +114,8 @@ export default function Home() {
         }}
       >
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "14px 24px" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 14,
-              flexWrap: "wrap",
-            }}
-          >
-            <div style={{ fontWeight: 900, letterSpacing: 0.2, fontSize: 16 }}>
-              T&apos;s Cakes
-            </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+            <div style={{ fontWeight: 900, letterSpacing: 0.2, fontSize: 16 }}>T&apos;s Cakes</div>
 
             <nav style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
               {navItems.map((item) => {
@@ -145,11 +139,7 @@ export default function Home() {
                   >
                     {isBasket ? <BasketIcon /> : null}
                     <span>{item.label}</span>
-                    {isBasket ? (
-                      <span className="topbar-badge" aria-label="Items in basket">
-                        {basketCount}
-                      </span>
-                    ) : null}
+                    {isBasket ? <span className="topbar-badge">{basketCount}</span> : null}
                   </a>
                 );
               })}
@@ -233,15 +223,7 @@ export default function Home() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16 }}>
           {products.map((p) => (
-            <div
-              key={p.id}
-              style={{
-                border: "1px solid var(--border)",
-                background: "var(--card)",
-                borderRadius: 16,
-                overflow: "hidden",
-              }}
-            >
+            <div key={p.id} style={{ border: "1px solid var(--border)", background: "var(--card)", borderRadius: 16, overflow: "hidden" }}>
               <img src={p.image} alt={p.name} style={{ width: "100%", height: 210, objectFit: "cover", background: "#f3f3f3" }} />
 
               <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 8 }}>
@@ -269,7 +251,6 @@ export default function Home() {
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                   <div style={{ fontWeight: 800 }}>{gbp(p.price)}</div>
-
                   <a
                     href="#contact"
                     style={{
@@ -307,15 +288,9 @@ export default function Home() {
 
         <div style={{ border: "1px solid var(--border)", background: "var(--card)", borderRadius: 16, padding: 14 }}>
           <div style={{ display: "grid", gap: 8, color: "var(--foreground)" }}>
-            <div>
-              <b>Email:</b> you@yourbakery.co.uk
-            </div>
-            <div>
-              <b>Phone:</b> +44 07xxx xxxxxx
-            </div>
-            <div>
-              <b>Location:</b> Your town/city
-            </div>
+            <div><b>Email:</b> you@yourbakery.co.uk</div>
+            <div><b>Phone:</b> +44 07xxx xxxxxx</div>
+            <div><b>Location:</b> Your town/city</div>
           </div>
 
           <p style={{ color: "var(--muted)" }}>
