@@ -4,13 +4,7 @@ import { useEffect, useState, type MouseEvent } from "react";
 
 function BasketIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
         d="M3 6h2l2.2 10.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L22 6H6.2"
         stroke="currentColor"
@@ -38,8 +32,7 @@ export default function Home() {
     {
       id: "victoria",
       name: "Classic Victoria Sponge",
-      description:
-        "Light sponge with strawberry jam and vanilla buttercream. Serves 8–10.",
+      description: "Light sponge with strawberry jam and vanilla buttercream. Serves 8–10.",
       price: 28,
       image: "/products/victoria.jpg",
       tags: ["Popular", "Vegetarian"],
@@ -75,14 +68,10 @@ export default function Home() {
     { key: "about", label: "About us", href: "#" },
   ] as const;
 
-  const [activeKey, setActiveKey] = useState<(typeof navItems)[number]["key"]>(
-    "cakes"
-  );
+  const [activeKey, setActiveKey] = useState<(typeof navItems)[number]["key"]>("cakes");
 
-  // For looks: basket badge can just stay 0 for now
   const basketCount = 0;
 
-  // Make active state follow the URL hash for the sections you have.
   useEffect(() => {
     const syncFromHash = () => {
       const hash = window.location.hash || "";
@@ -97,35 +86,27 @@ export default function Home() {
   }, []);
 
   const gbp = (n: number) =>
-    new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(n);
+    new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(n);
 
-  const handleNavClick = (
-    e: MouseEvent<HTMLAnchorElement>,
-    item: (typeof navItems)[number]
-  ) => {
-    // For the non-functional tabs, prevent jumping to top
+  const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, item: (typeof navItems)[number]) => {
     if (item.href === "#") {
       e.preventDefault();
       setActiveKey(item.key);
       return;
     }
-    // For real anchors, still set active immediately (then hashchange keeps it correct)
     setActiveKey(item.key);
   };
 
   return (
-    <main style={{ background: "#fffaf5", minHeight: "100vh", color: "#1f2328" }}>
+    <main style={{ background: "var(--background)", minHeight: "100vh", color: "var(--foreground)" }}>
       {/* Top banner */}
       <header
         style={{
           position: "sticky",
           top: 0,
           zIndex: 50,
-          background: "#fffaf5",
-          borderBottom: "1px solid #ece6e0",
+          background: "var(--primary)",
+          borderBottom: "1px solid var(--primary-strong)",
         }}
       >
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "14px 24px" }}>
@@ -142,14 +123,7 @@ export default function Home() {
               T&apos;s Cakes
             </div>
 
-            <nav
-              style={{
-                display: "flex",
-                gap: 10,
-                flexWrap: "wrap",
-                justifyContent: "flex-end",
-              }}
-            >
+            <nav style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
               {navItems.map((item) => {
                 const isActive = activeKey === item.key;
                 const isBasket = item.key === "basket";
@@ -164,7 +138,7 @@ export default function Home() {
                       "topbar-link",
                       isPrimary ? "topbar-link--primary" : "",
                       isActive ? "is-active" : "",
-                    ]  
+                    ]
                       .filter(Boolean)
                       .join(" ")}
                     aria-current={isActive ? "page" : undefined}
@@ -194,63 +168,61 @@ export default function Home() {
             gap: 20,
             alignItems: "center",
             padding: 24,
-            background: "white",
-            border: "1px solid #ece6e0",
+            background: "var(--card)",
+            border: "1px solid var(--border)",
             borderRadius: 16,
           }}
         >
           <div>
-            <h1 style={{ margin: "0 0 8px", fontSize: 40 }}>
-              Custom cakes baked to order
-            </h1>
-            <p style={{ margin: 0, color: "#667085", lineHeight: 1.6 }}>
-              Fresh bakes for birthdays, anniversaries, and events. Choose a cake
-              from the menu or request a custom design.
+            <h1 style={{ margin: "0 0 8px", fontSize: 40 }}>Custom cakes baked to order</h1>
+            <p style={{ margin: 0, color: "var(--muted)", lineHeight: 1.6 }}>
+              Fresh bakes for birthdays, anniversaries, and events. Choose a cake from the menu or request a custom design.
             </p>
+
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
               <a
                 href="#cakes"
                 style={{
-                  border: "1px solid #b85c7a",
-                  background: "#b85c7a",
-                  color: "white",
+                  border: "1px solid var(--primary-strong)",
+                  background: "var(--primary)",
+                  color: "var(--foreground)",
                   padding: "10px 14px",
                   borderRadius: 10,
-                  fontWeight: 600,
+                  fontWeight: 700,
                   textDecoration: "none",
                 }}
               >
                 View cakes
               </a>
+
               <a
                 href="#contact"
                 style={{
-                  border: "1px solid #b85c7a",
+                  border: "1px solid var(--primary-strong)",
                   background: "transparent",
-                  color: "#b85c7a",
+                  color: "var(--foreground)",
                   padding: "10px 14px",
                   borderRadius: 10,
-                  fontWeight: 600,
+                  fontWeight: 700,
                   textDecoration: "none",
                 }}
               >
                 Request a custom order
               </a>
             </div>
-            <p style={{ marginTop: 14, color: "#667085" }}>
+
+            <p style={{ marginTop: 14, color: "var(--muted)" }}>
               Typical lead time: <b>3–7 days</b> (adjust this).
             </p>
           </div>
 
-          <div style={{ border: "1px solid #ece6e0", borderRadius: 16, overflow: "hidden", background: "white" }}>
+          <div style={{ border: "1px solid var(--border)", borderRadius: 16, overflow: "hidden", background: "var(--card)" }}>
             <img
               src={products[0].image}
               alt="Featured cake"
               style={{ width: "100%", height: 260, objectFit: "cover", background: "#f3f3f3" }}
             />
-            <div style={{ padding: 14, color: "#667085" }}>
-              Collection / delivery available (edit details below).
-            </div>
+            <div style={{ padding: 14, color: "var(--muted)" }}>Collection / delivery available (edit details below).</div>
           </div>
         </section>
 
@@ -259,23 +231,19 @@ export default function Home() {
           Menu
         </h2>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-            gap: 16,
-          }}
-        >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16 }}>
           {products.map((p) => (
             <div
               key={p.id}
-              style={{ border: "1px solid #ece6e0", background: "white", borderRadius: 16, overflow: "hidden" }}
+              style={{
+                border: "1px solid var(--border)",
+                background: "var(--card)",
+                borderRadius: 16,
+                overflow: "hidden",
+              }}
             >
-              <img
-                src={p.image}
-                alt={p.name}
-                style={{ width: "100%", height: 210, objectFit: "cover", background: "#f3f3f3" }}
-              />
+              <img src={p.image} alt={p.name} style={{ width: "100%", height: 210, objectFit: "cover", background: "#f3f3f3" }} />
+
               <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 8 }}>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {p.tags.map((t) => (
@@ -283,12 +251,12 @@ export default function Home() {
                       key={t}
                       style={{
                         display: "inline-block",
-                        background: "#f7e7ee",
-                        color: "#b85c7a",
+                        background: "var(--primary)",
+                        color: "var(--foreground)",
                         padding: "4px 10px",
                         borderRadius: 999,
                         fontSize: 12,
-                        border: "1px solid #f1d1dc",
+                        border: "1px solid var(--primary-strong)",
                       }}
                     >
                       {t}
@@ -297,19 +265,20 @@ export default function Home() {
                 </div>
 
                 <div style={{ fontSize: 18, fontWeight: 800 }}>{p.name}</div>
-                <div style={{ color: "#667085" }}>{p.description}</div>
+                <div style={{ color: "var(--muted)" }}>{p.description}</div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                   <div style={{ fontWeight: 800 }}>{gbp(p.price)}</div>
+
                   <a
                     href="#contact"
                     style={{
-                      border: "1px solid #b85c7a",
-                      background: "#b85c7a",
-                      color: "white",
+                      border: "1px solid var(--primary-strong)",
+                      background: "var(--primary)",
+                      color: "var(--foreground)",
                       padding: "10px 14px",
                       borderRadius: 10,
-                      fontWeight: 600,
+                      fontWeight: 700,
                       textDecoration: "none",
                     }}
                   >
@@ -325,13 +294,10 @@ export default function Home() {
         <h2 id="order" style={{ marginTop: 34, marginBottom: 10, fontSize: 20 }}>
           Orders & payments
         </h2>
-        <div style={{ border: "1px solid #ece6e0", background: "white", borderRadius: 16, padding: 14, color: "#667085" }}>
-          <p style={{ marginTop: 0 }}>
-            This section is where card payments will go (Stripe). For now, your website is “display + contact”.
-          </p>
-          <p style={{ marginBottom: 0 }}>
-            Next step: we’ll add a simple order form → then connect Stripe checkout.
-          </p>
+
+        <div style={{ border: "1px solid var(--border)", background: "var(--card)", borderRadius: 16, padding: 14, color: "var(--muted)" }}>
+          <p style={{ marginTop: 0 }}>This section is where card payments will go (Stripe). For now, your website is “display + contact”.</p>
+          <p style={{ marginBottom: 0 }}>Next step: we’ll add a simple order form → then connect Stripe checkout.</p>
         </div>
 
         {/* Contact */}
@@ -339,19 +305,25 @@ export default function Home() {
           Contact
         </h2>
 
-        <div style={{ border: "1px solid #ece6e0", background: "white", borderRadius: 16, padding: 14 }}>
-          <div style={{ display: "grid", gap: 8, color: "#1f2328" }}>
-            <div><b>Email:</b> you@yourbakery.co.uk</div>
-            <div><b>Phone:</b> +44 07xxx xxxxxx</div>
-            <div><b>Location:</b> Your town/city</div>
+        <div style={{ border: "1px solid var(--border)", background: "var(--card)", borderRadius: 16, padding: 14 }}>
+          <div style={{ display: "grid", gap: 8, color: "var(--foreground)" }}>
+            <div>
+              <b>Email:</b> you@yourbakery.co.uk
+            </div>
+            <div>
+              <b>Phone:</b> +44 07xxx xxxxxx
+            </div>
+            <div>
+              <b>Location:</b> Your town/city
+            </div>
           </div>
 
-          <p style={{ color: "#667085" }}>
+          <p style={{ color: "var(--muted)" }}>
             For custom cakes, include: servings, theme, date needed, allergies, and budget.
           </p>
         </div>
 
-        <footer style={{ marginTop: 40, padding: "18px 0 40px", color: "#667085", fontSize: 14, borderTop: "1px solid #ece6e0" }}>
+        <footer style={{ marginTop: 40, padding: "18px 0 40px", color: "var(--muted)", fontSize: 14, borderTop: "1px solid var(--border)" }}>
           © {new Date().getFullYear()} Your Bakery Name. All rights reserved.
         </footer>
       </div>
