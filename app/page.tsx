@@ -55,15 +55,13 @@ export default function Home() {
     },
   ];
 
-  // NOTE: "Order" no longer points to #order since the Orders section was removed.
   const navItems = [
     { key: "cakes", label: "Cakes", href: "#cakes" },
     { key: "brownies", label: "Brownies", href: "#" },
     { key: "cupcakes", label: "Cupcakes", href: "#" },
     { key: "traybakes", label: "Tray bakes", href: "#" },
-    { key: "makeyourown", label: "Make your own", href: "#" },
+    { key: "customcakes", label: "Custom Cakes", href: "#contact" },
     { key: "inquire", label: "Inquire", href: "#contact" },
-    { key: "order", label: "Order", href: "#contact" },
     { key: "contact", label: "Contact us", href: "#contact" },
     { key: "basket", label: "Basket", href: "#" },
     { key: "about", label: "About us", href: "#" },
@@ -71,17 +69,20 @@ export default function Home() {
 
   const [activeKey, setActiveKey] = useState<(typeof navItems)[number]["key"]>("cakes");
 
-  // For looks: basket badge can just stay 0 for now
   const basketCount = 0;
 
-  // Keep active tab in sync with hash, but don't overwrite "Inquire" when it goes to #contact.
+  // Keep active tab in sync with hash; preserve whichever contact-related tab was clicked.
   useEffect(() => {
     const syncFromHash = () => {
       const hash = window.location.hash || "";
 
       if (hash === "#cakes") setActiveKey("cakes");
       else if (hash === "#contact") {
-        setActiveKey((prev) => (prev === "inquire" ? "inquire" : prev === "order" ? "order" : "contact"));
+        setActiveKey((prev) => {
+          if (prev === "inquire") return "inquire";
+          if (prev === "customcakes") return "customcakes";
+          return "contact";
+        });
       }
     };
 
@@ -120,10 +121,15 @@ export default function Home() {
             style={{
               textAlign: "center",
               fontWeight: 900,
-              letterSpacing: 2,
-              fontSize: 22,
+              letterSpacing: 3,
+              fontSize: 34,
               paddingTop: 6,
-              paddingBottom: 10,
+              paddingBottom: 12,
+              color: "#ffffff",
+              // White fill + black outline effect:
+              WebkitTextStroke: "2px #000000",
+              textShadow:
+                "1px 0 0 #000, -1px 0 0 #000, 0 1px 0 #000, 0 -1px 0 #000",
             }}
           >
             T&apos;S CAKES
